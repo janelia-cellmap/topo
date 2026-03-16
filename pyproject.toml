@@ -34,10 +34,8 @@ docs = [
     "sphinx-autodoc-typehints",
     "sphinx-autoapi",
     "myst-nb",
-    "myst-parser",
     "jupytext",
     "ipykernel",
-    "nbsphinx",
     "matplotlib",
 ]
 

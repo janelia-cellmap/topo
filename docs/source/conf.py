@@ -11,7 +11,8 @@ extensions = [
     "sphinx_autodoc_typehints",
     "autoapi.extension",
     "myst_nb",
-    "myst_parser",
+    # NOTE: do NOT add myst_parser — myst_nb already includes it,
+    # and having both causes "source_suffix .md is already registered"
 ]
 
 # AutoAPI configuration
@@ -32,14 +33,6 @@ nb_execution_raise_on_error = True
 # Theme
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
-
-# Source file suffixes
-source_suffix = {
-    ".rst": "restructuredtext",
-    ".md": "myst-nb",
-    ".myst": "myst-nb",
-    ".ipynb": "myst-nb",
-}
 
 # Suppress warnings for duplicate labels from autoapi + manual docs
 suppress_warnings = ["myst.domains"]
