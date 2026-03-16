@@ -14,16 +14,77 @@ import numpy as np
 from scipy.ndimage import center_of_mass, distance_transform_edt, binary_dilation
 from typing import Optional
 
-from .config import EVALUATED_INSTANCE_CLASSES, INSTANCE_CLASS_CONFIG
+from .config import EVALUATED_INSTANCE_CLASSES, get_instance_class_config
+
+
+def _touches_crop_boundary(mask: np.ndarray, spatial_mask: np.ndarray) -> bool:
+    """Check if an instance touches the annotation boundary (spatial_mask=0)."""
+    dilated = binary_dilation(mask, iterations=1)
+    boundary_region = dilated & ~mask
+    return bool(np.any(boundary_region & (spatial_mask < 0.5)))
+
+
+def _find_center(
+    mask: np.ndarray, spatial_mask: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    """Find the instance center: COM for fully visible instances,
+    distance transform peak for cropped instances.
+
+    For cropped instances, we pad the mask with 1s at crop faces where
+    the instance exits (pretending it continues beyond the crop).  This
+    way the EDT only sees real instance boundaries, not crop boundaries,
+    and the peak shifts toward the crop edge.  At inference, when two
+    adjacent crops each contain half of the same instance, both peaks
+    will be near the shared crop face → easy to merge.
+    """
+    if spatial_mask is not None and _touches_crop_boundary(mask, spatial_mask):
+        # Pad with 0 (default), then fill crop faces with 1 where
+        # the instance touches the annotation boundary
+        padded = np.pad(mask.astype(np.uint8), 1, mode='constant', constant_values=0)
+        sp_padded = np.pad((spatial_mask > 0.5).astype(np.uint8), 1,
+                           mode='constant', constant_values=0)
+
+        # For each face: if the instance touches a crop boundary there,
+        # extend the mask into the padding (as if the instance continues)
+        for axis in range(mask.ndim):
+            for side in [0, -1]:
+                # Slice at the face of the original volume (offset by 1 for padding)
+                face_slc = [slice(1, -1)] * mask.ndim
+                face_slc[axis] = 1 if side == 0 else padded.shape[axis] - 2
+                face_mask = padded[tuple(face_slc)]
+                face_spatial = sp_padded[tuple(face_slc)]
+
+                # Where instance is present AND spatial_mask=0 → crop boundary
+                exits = (face_mask > 0) & (face_spatial == 0)
+                if exits.any():
+                    pad_slc = [slice(1, -1)] * mask.ndim
+                    pad_slc[axis] = 0 if side == 0 else padded.shape[axis] - 1
+                    padded[tuple(pad_slc)] = np.where(exits, 1, padded[tuple(pad_slc)])
+
+        dist = distance_transform_edt(padded)
+        # Crop back to original size
+        dist = dist[1:-1, 1:-1, 1:-1]
+        peak = np.unravel_index(np.argmax(dist), dist.shape)
+        return np.array(peak, dtype=np.float32)
+    else:
+        return np.array(center_of_mass(mask), dtype=np.float32)
 
 
 def generate_direct_flows(
     instance_mask: np.ndarray,
+    spatial_mask: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    """Generate unit vectors from each voxel to its instance's center of mass.
+    """Generate unit vectors from each voxel to its instance's center.
+
+    For instances fully inside the annotated region, the center is the
+    center of mass.  For instances touching the crop boundary
+    (spatial_mask=0), the center is the distance-transform peak — the
+    point farthest from any edge — which is robust to cropping.
 
     Args:
         instance_mask: [D, H, W] int array of instance IDs (0 = background).
+        spatial_mask: [D, H, W] float/bool — 1 inside annotated region.
+            If None, center of mass is used for all instances.
 
     Returns:
         flows: [3, D, H, W] float32 — unit flow vectors (dz, dy, dx).
@@ -40,7 +101,7 @@ def generate_direct_flows(
         if mask.sum() == 0:
             continue
 
-        com = np.array(center_of_mass(mask), dtype=np.float32)
+        com = _find_center(mask, spatial_mask)
 
         dz = com[0] - coords[0]
         dy = com[1] - coords[1]
@@ -52,7 +113,7 @@ def generate_direct_flows(
         flows[1][mask] = (dy / mag)[mask]
         flows[2][mask] = (dx / mag)[mask]
 
-        # Sink at center of mass
+        # Sink at center
         z0 = np.clip(int(round(com[0])), 0, D - 1)
         y0 = np.clip(int(round(com[1])), 0, H - 1)
         x0 = np.clip(int(round(com[2])), 0, W - 1)
@@ -213,6 +274,7 @@ def compute_flow_targets(
     instance_ids: np.ndarray,
     class_names: Optional[list[str]] = None,
     class_config: Optional[dict] = None,
+    resolution_nm: Optional[int] = None,
     diffusion_iters: int = 200,
     adaptive_iters: bool = True,
     adaptive_factor: int = 6,
@@ -227,7 +289,8 @@ def compute_flow_targets(
     Args:
         instance_ids: [N, D, H, W] int32 — instance IDs per class.
         class_names: List of N class names. Defaults to EVALUATED_INSTANCE_CLASSES.
-        class_config: Per-class config dict. Defaults to INSTANCE_CLASS_CONFIG.
+        class_config: Per-class config dict. Defaults to resolution-based config.
+        resolution_nm: Resolution in nm, used to select default class_config.
         diffusion_iters: Max diffusion iterations.
         adaptive_iters: Scale iterations with instance extent.
         adaptive_factor: Multiplier for adaptive iteration count.
@@ -240,7 +303,7 @@ def compute_flow_targets(
     if class_names is None:
         class_names = EVALUATED_INSTANCE_CLASSES
     if class_config is None:
-        class_config = INSTANCE_CLASS_CONFIG
+        class_config = get_instance_class_config(resolution_nm)
 
     N = instance_ids.shape[0]
     D, H, W = instance_ids.shape[1:]
@@ -268,7 +331,7 @@ def compute_flow_targets(
                 spatial_mask=spatial_mask,
             )
         else:
-            cls_flows = generate_direct_flows(ids)
+            cls_flows = generate_direct_flows(ids, spatial_mask=spatial_mask)
 
         flows[c * 3 : c * 3 + 3] = cls_flows
 

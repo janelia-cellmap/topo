@@ -1,0 +1,257 @@
+==========================================================================================
+GT Instance Statistics - Per Class x Resolution
+==========================================================================================
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  NUC
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  392 instances from 93 crops
+    Volume (voxels):   min=       7  p5=   10663  median=  966499  p95=21821051  max=262095196
+    Bbox max extent:   min=       7  p5=      63  median=     174  p95=     471  max=    1015
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=   415.1  max=  1047.3
+    -> Recommended:  min_size=5331  n_steps=943  convergence_radius=1.5
+
+  Resolution: ~16nm  |  493 instances from 131 crops
+    Volume (voxels):   min=       7  p5=    2309  median=  277894  p95=13894671  max=32769151
+    Bbox max extent:   min=       5  p5=      39  median=     115  p95=     400  max=     506
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=   134.4  max=   523.6
+    -> Recommended:  min_size=1154  n_steps=800  convergence_radius=1.5
+
+  Resolution: ~32nm  |  851 instances from 146 crops
+    Volume (voxels):   min=       1  p5=     450  median=  212218  p95=14969107  max=19858668
+    Bbox max extent:   min=       1  p5=      20  median=     134  p95=     331  max=     527
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=   124.2  max=   261.8
+    -> Recommended:  min_size=225  n_steps=662  convergence_radius=1.5
+
+  Resolution: ~64nm  |  646 instances from 98 crops
+    Volume (voxels):   min=       1  p5=     532  median=   86182  p95= 1469330  max= 2481697
+    Bbox max extent:   min=       1  p5=      21  median=      93  p95=     168  max=     264
+    NN COM distance:   min=     0.0  p5=     0.0  median=    44.9  p95=   218.7  max=   364.1
+    -> Recommended:  min_size=266  n_steps=336  convergence_radius=1.5
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  VES
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  5426 instances from 197 crops
+    Volume (voxels):   min=       2  p5=      29  median=     163  p95=     847  max=    4257
+    Bbox max extent:   min=       2  p5=       4  median=       8  p95=      14  max=      30
+    NN COM distance:   min=     0.0  p5=     6.1  median=    13.3  p95=    55.5  max=   183.3
+    -> Recommended:  min_size=14  n_steps=28  convergence_radius=2.7
+
+  Resolution: ~16nm  |  5413 instances from 193 crops
+    Volume (voxels):   min=       1  p5=       3  median=      18  p95=      98  max=     446
+    Bbox max extent:   min=       1  p5=       2  median=       4  p95=       7  max=      15
+    NN COM distance:   min=     0.0  p5=     0.0  median=     6.2  p95=    27.0  max=    82.4
+    -> Recommended:  min_size=5  n_steps=20  convergence_radius=1.5
+
+  Resolution: ~32nm  |  5209 instances from 179 crops
+    Volume (voxels):   min=       1  p5=       1  median=       2  p95=      11  max=      54
+    Bbox max extent:   min=       1  p5=       1  median=       2  p95=       3  max=       7
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=    12.5  max=    41.2
+    -> Recommended:  min_size=5  n_steps=20  convergence_radius=1.5
+
+  Resolution: ~64nm  |  428 instances from 66 crops
+    Volume (voxels):   min=       1  p5=       1  median=       1  p95=       2  max=       5
+    Bbox max extent:   min=       1  p5=       1  median=       1  p95=       2  max=       4
+    NN COM distance:   min=     1.1  p5=     1.8  median=     4.6  p95=    16.3  max=    30.6
+    -> Recommended:  min_size=5  n_steps=20  convergence_radius=1.5
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  ENDO
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  2964 instances from 192 crops
+    Volume (voxels):   min=       3  p5=     163  median=    1580  p95=   14416  max=  293249
+    Bbox max extent:   min=       2  p5=       9  median=      21  p95=      56  max=     173
+    NN COM distance:   min=     0.0  p5=    10.3  median=    23.9  p95=    76.3  max=   257.8
+    -> Recommended:  min_size=81  n_steps=112  convergence_radius=5.2
+
+  Resolution: ~16nm  |  3007 instances from 190 crops
+    Volume (voxels):   min=       1  p5=      19  median=     194  p95=    1729  max=   35074
+    Bbox max extent:   min=       1  p5=       4  median=      10  p95=      28  max=      86
+    NN COM distance:   min=     0.0  p5=     0.0  median=    11.1  p95=    36.6  max=   128.9
+    -> Recommended:  min_size=9  n_steps=56  convergence_radius=1.5
+
+  Resolution: ~32nm  |  3492 instances from 178 crops
+    Volume (voxels):   min=       1  p5=       2  median=      20  p95=     227  max=    4376
+    Bbox max extent:   min=       1  p5=       2  median=       5  p95=      13  max=      43
+    NN COM distance:   min=     0.0  p5=     0.0  median=     3.4  p95=    16.0  max=    64.1
+    -> Recommended:  min_size=5  n_steps=26  convergence_radius=1.5
+
+  Resolution: ~64nm  |  1482 instances from 88 crops
+    Volume (voxels):   min=       1  p5=       1  median=       3  p95=      29  max=     368
+    Bbox max extent:   min=       1  p5=       1  median=       2  p95=       7  max=      21
+    NN COM distance:   min=     1.0  p5=     1.5  median=     3.7  p95=    11.0  max=    28.3
+    -> Recommended:  min_size=5  n_steps=20  convergence_radius=1.5
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  LYSO
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  2496 instances from 116 crops
+    Volume (voxels):   min=       2  p5=     452  median=    5413  p95=   28961  max= 1970739
+    Bbox max extent:   min=       2  p5=      12  median=      26  p95=      55  max=     158
+    NN COM distance:   min=     0.0  p5=     0.0  median=    32.5  p95=   153.3  max=   575.5
+    -> Recommended:  min_size=226  n_steps=110  convergence_radius=1.5
+
+  Resolution: ~16nm  |  7253 instances from 164 crops
+    Volume (voxels):   min=       1  p5=      40  median=     668  p95=    6704  max=  305313
+    Bbox max extent:   min=       1  p5=       5  median=      14  p95=      38  max=     209
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=    49.2  max=   180.7
+    -> Recommended:  min_size=20  n_steps=76  convergence_radius=1.5
+
+  Resolution: ~32nm  |  4825 instances from 159 crops
+    Volume (voxels):   min=       1  p5=       5  median=      81  p95=     745  max=   38006
+    Bbox max extent:   min=       1  p5=       2  median=       7  p95=      18  max=     105
+    NN COM distance:   min=     0.0  p5=     2.5  median=     9.4  p95=    42.5  max=   181.0
+    -> Recommended:  min_size=5  n_steps=36  convergence_radius=1.5
+
+  Resolution: ~64nm  |  3968 instances from 117 crops
+    Volume (voxels):   min=       1  p5=       1  median=      12  p95=     105  max=    4704
+    Bbox max extent:   min=       1  p5=       1  median=       3  p95=       9  max=      52
+    NN COM distance:   min=     1.1  p5=     2.4  median=     5.3  p95=    22.4  max=    90.1
+    -> Recommended:  min_size=5  n_steps=20  convergence_radius=1.5
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  LD
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  3119 instances from 70 crops
+    Volume (voxels):   min=       7  p5=    1353  median=   34753  p95=  855443  max=19824555
+    Bbox max extent:   min=       4  p5=      16  median=      51  p95=     145  max=     442
+    NN COM distance:   min=     0.0  p5=     0.0  median=    50.7  p95=   154.3  max=   665.6
+    -> Recommended:  min_size=676  n_steps=290  convergence_radius=1.5
+
+  Resolution: ~16nm  |  2278 instances from 75 crops
+    Volume (voxels):   min=       1  p5=     166  median=    3479  p95=  124689  max= 2478459
+    Bbox max extent:   min=       1  p5=       8  median=      24  p95=      76  max=     221
+    NN COM distance:   min=     0.0  p5=     7.9  median=    32.5  p95=    77.8  max=   332.8
+    -> Recommended:  min_size=83  n_steps=152  convergence_radius=3.9
+
+  Resolution: ~32nm  |  4006 instances from 81 crops
+    Volume (voxels):   min=       1  p5=      29  median=    1327  p95=   51272  max=  403523
+    Bbox max extent:   min=       1  p5=       5  median=      16  p95=      55  max=     127
+    NN COM distance:   min=     0.0  p5=     0.0  median=     7.9  p95=    34.4  max=   166.4
+    -> Recommended:  min_size=14  n_steps=111  convergence_radius=1.5
+
+  Resolution: ~64nm  |  2168 instances from 61 crops
+    Volume (voxels):   min=       1  p5=       6  median=     212  p95=    6743  max=   50412
+    Bbox max extent:   min=       1  p5=       3  median=       9  p95=      29  max=      63
+    NN COM distance:   min=     1.9  p5=     4.7  median=    14.8  p95=    44.0  max=    82.9
+    -> Recommended:  min_size=5  n_steps=58  convergence_radius=2.3
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  PEROX
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  2151 instances from 65 crops
+    Volume (voxels):   min=     160  p5=    1929  median=   20117  p95=  119338  max= 3221243
+    Bbox max extent:   min=      10  p5=      22  median=      46  p95=     107  max=     232
+    NN COM distance:   min=     0.0  p5=     0.0  median=    52.6  p95=   146.0  max=   456.5
+    -> Recommended:  min_size=964  n_steps=214  convergence_radius=1.5
+
+  Resolution: ~16nm  |  1978 instances from 66 crops
+    Volume (voxels):   min=      17  p5=     243  median=    2389  p95=    9932  max=   50219
+    Bbox max extent:   min=       5  p5=      11  median=      22  p95=      51  max=     109
+    NN COM distance:   min=     0.0  p5=    12.0  median=    27.6  p95=    66.5  max=   213.7
+    -> Recommended:  min_size=121  n_steps=102  convergence_radius=6.0
+
+  Resolution: ~32nm  |  4904 instances from 76 crops
+    Volume (voxels):   min=       2  p5=      81  median=     682  p95=    3004  max=    6953
+    Bbox max extent:   min=       2  p5=       7  median=      15  p95=      26  max=      54
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=    25.2  max=   107.4
+    -> Recommended:  min_size=40  n_steps=52  convergence_radius=1.5
+
+  Resolution: ~64nm  |  3207 instances from 60 crops
+    Volume (voxels):   min=       1  p5=       9  median=      62  p95=     335  max=     866
+    Bbox max extent:   min=       1  p5=       3  median=       7  p95=      13  max=      27
+    NN COM distance:   min=     1.2  p5=     3.4  median=     9.0  p95=    22.0  max=    44.5
+    -> Recommended:  min_size=5  n_steps=26  convergence_radius=1.7
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  MITO
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  5706 instances from 198 crops
+    Volume (voxels):   min=       1  p5=    1663  median=   26188  p95=  917870  max=14895863
+    Bbox max extent:   min=       1  p5=      22  median=      53  p95=     268  max=     935
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=   165.5  max=   401.0
+    -> Recommended:  min_size=831  n_steps=536  convergence_radius=1.5
+
+  Resolution: ~16nm  |  12369 instances from 250 crops
+    Volume (voxels):   min=       1  p5=     478  median=   13334  p95=  110190  max= 1863517
+    Bbox max extent:   min=       1  p5=      14  median=      50  p95=     160  max=     467
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=    56.9  max=   200.7
+    -> Recommended:  min_size=239  n_steps=320  convergence_radius=1.5
+
+  Resolution: ~32nm  |  9412 instances from 251 crops
+    Volume (voxels):   min=       1  p5=      53  median=    1709  p95=   21713  max=  233239
+    Bbox max extent:   min=       1  p5=       7  median=      24  p95=      80  max=     233
+    NN COM distance:   min=     0.0  p5=     0.0  median=    14.3  p95=    41.1  max=   109.8
+    -> Recommended:  min_size=26  n_steps=160  convergence_radius=1.5
+
+  Resolution: ~64nm  |  6460 instances from 169 crops
+    Volume (voxels):   min=       1  p5=      15  median=     322  p95=    2909  max=   29178
+    Bbox max extent:   min=       1  p5=       4  median=      15  p95=      45  max=     116
+    NN COM distance:   min=     1.1  p5=     4.6  median=    10.2  p95=    23.4  max=    54.9
+    -> Recommended:  min_size=7  n_steps=90  convergence_radius=2.3
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  MT
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  786 instances from 82 crops
+    Volume (voxels):   min=      38  p5=     167  median=    1027  p95=    3976  max=    9440
+    Bbox max extent:   min=       6  p5=      15  median=      70  p95=     150  max=     250
+    NN COM distance:   min=     0.0  p5=     0.0  median=    19.4  p95=    64.7  max=   137.8
+    -> Recommended:  min_size=83  n_steps=300  convergence_radius=1.5
+
+  Resolution: ~16nm  |  786 instances from 78 crops
+    Volume (voxels):   min=       4  p5=      17  median=     115  p95=     464  max=    1151
+    Bbox max extent:   min=       3  p5=       7  median=      35  p95=      75  max=     125
+    NN COM distance:   min=     0.0  p5=     0.0  median=     9.2  p95=    31.4  max=    69.7
+    -> Recommended:  min_size=8  n_steps=150  convergence_radius=1.5
+
+  Resolution: ~32nm  |  1070 instances from 70 crops
+    Volume (voxels):   min=       1  p5=       1  median=       8  p95=      44  max=     136
+    Bbox max extent:   min=       1  p5=       1  median=      14  p95=      37  max=      62
+    NN COM distance:   min=     0.0  p5=     0.0  median=     0.0  p95=     6.7  max=    31.0
+    -> Recommended:  min_size=5  n_steps=74  convergence_radius=1.5
+
+  Resolution: ~64nm  |  49 instances from 9 crops
+    Volume (voxels):   min=       1  p5=       1  median=       2  p95=       5  max=      14
+    Bbox max extent:   min=       1  p5=       1  median=       4  p95=      16  max=      20
+    NN COM distance:   min=     2.2  p5=     2.3  median=     3.6  p95=    13.5  max=    13.8
+    -> Recommended:  min_size=5  n_steps=32  convergence_radius=1.5
+
+──────────────────────────────────────────────────────────────────────────────────────────
+  CELL
+──────────────────────────────────────────────────────────────────────────────────────────
+
+  Resolution: ~8nm  |  5230 instances from 281 crops
+    Volume (voxels):   min=       1  p5=       3  median=    3542  p95= 2390902  max=117912372
+    Bbox max extent:   min=       1  p5=       2  median=      32  p95=     307  max=     900
+    NN COM distance:   min=     0.0  p5=     6.4  median=    22.2  p95=    93.4  max=   286.0
+    -> Recommended:  min_size=5  n_steps=614  convergence_radius=3.2
+
+  Resolution: ~16nm  |  4531 instances from 277 crops
+    Volume (voxels):   min=       1  p5=       1  median=     555  p95=  262379  max=14752852
+    Bbox max extent:   min=       1  p5=       1  median=      18  p95=     148  max=     450
+    NN COM distance:   min=     0.0  p5=     3.0  median=    11.4  p95=    44.0  max=   143.1
+    -> Recommended:  min_size=5  n_steps=297  convergence_radius=1.5
+
+  Resolution: ~32nm  |  4167 instances from 264 crops
+    Volume (voxels):   min=       1  p5=       2  median=     184  p95=   39021  max= 1847481
+    Bbox max extent:   min=       1  p5=       2  median=      13  p95=      75  max=     225
+    NN COM distance:   min=     0.0  p5=     0.0  median=     5.4  p95=    22.3  max=    73.2
+    -> Recommended:  min_size=5  n_steps=150  convergence_radius=1.5
+
+  Resolution: ~64nm  |  2347 instances from 149 crops
+    Volume (voxels):   min=       1  p5=       1  median=      49  p95=   22934  max= 1532118
+    Bbox max extent:   min=       1  p5=       1  median=       9  p95=      70  max=     224
+    NN COM distance:   min=     0.0  p5=     0.0  median=     3.9  p95=    12.8  max=    49.7
+    -> Recommended:  min_size=5  n_steps=140  convergence_radius=1.5
+
+==========================================================================================

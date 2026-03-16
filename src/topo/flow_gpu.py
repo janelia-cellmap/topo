@@ -10,7 +10,7 @@ import torch
 import torch.nn.functional as F
 from typing import Optional
 
-from .config import EVALUATED_INSTANCE_CLASSES, INSTANCE_CLASS_CONFIG
+from .config import EVALUATED_INSTANCE_CLASSES, get_instance_class_config
 
 
 # ---------------------------------------------------------------------------
@@ -266,7 +266,7 @@ def compute_flow_targets_gpu(
     if class_names is None:
         class_names = EVALUATED_INSTANCE_CLASSES
     if class_config is None:
-        class_config = INSTANCE_CLASS_CONFIG
+        class_config = get_instance_class_config()
 
     device = instance_ids.device
     B, N, D, H, W = instance_ids.shape
