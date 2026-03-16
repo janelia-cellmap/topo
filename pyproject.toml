@@ -36,6 +36,7 @@ docs = [
     "myst-nb",
     "jupytext",
     "ipykernel",
+    "nbconvert",
     "matplotlib",
 ]
 
