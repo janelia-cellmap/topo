@@ -28,6 +28,18 @@ dependencies = [
 [project.optional-dependencies]
 gpu = ["torch>=2.0"]
 dev = ["pytest", "torch>=2.0"]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-autodoc-typehints",
+    "sphinx-autoapi",
+    "myst-nb",
+    "myst-parser",
+    "jupytext",
+    "ipykernel",
+    "nbsphinx",
+    "matplotlib",
+]
 
 [project.urls]
 Homepage = "https://github.com/janelia-cellmap/topo"
