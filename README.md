@@ -19,6 +19,9 @@
 
 - **Direct flows** — for convex shapes (nuclei, vesicles, etc.)
 - **Diffusion flows** — topology-aware flows for non-convex shapes (mitochondria, cells)
+<p align="center">
+<img src="imgs/fig.png" alt="topo logo" width="400"/>
+</p>
 
 ## Method
 
