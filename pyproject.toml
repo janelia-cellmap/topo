@@ -7,10 +7,10 @@ name = "topo"
 version = "0.1.0"
 description = "Topology-aware diffusion-based flow field generation for 3D instance segmentation"
 readme = "README.md"
-license = "MIT"
+license = { text = "BSD 3-Clause License" }
 requires-python = ">=3.9"
 authors = [
-    { name = "CellMap Team" },
+    {  email = "zouinkhim@hhmi.org", name = "Marwan Zouinkhi" },
 ]
 keywords = ["instance-segmentation", "diffusion", "flow-fields", "topology", "3d"]
 classifiers = [
