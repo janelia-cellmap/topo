@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -30,13 +33,11 @@ jobs:
     - name: Remove .py notebook sources (keep only .ipynb)
       run: rm ./docs/source/notebooks/*.py
 
-    - name: Build and Commit
-      uses: sphinx-notes/pages@v3
-      with:
-        documentation_path: ./docs/source
+    - name: Build Sphinx docs
+      run: sphinx-build -b html ./docs/source ./docs/build
 
-    - name: Push changes
-      uses: ad-m/github-push-action@master
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
+        publish_dir: ./docs/build
