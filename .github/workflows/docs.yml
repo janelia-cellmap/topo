@@ -3,7 +3,7 @@ name: Generate Pages
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   docs:
