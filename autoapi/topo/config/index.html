@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>topo.config &mdash; topo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="topo.flow" href="../flow/index.html" />
+    <link rel="prev" title="topo" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            topo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tutorial_full_volume.html">Full-Volume Instance Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tutorial_tiled_stitching.html">Tiled Stitching: Processing Large Volumes in Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">topo</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">topo.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../flow/index.html">topo.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../flow_gpu/index.html">topo.flow_gpu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../postprocess/index.html">topo.postprocess</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stitch/index.html">topo.stitch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">topo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">topo</a></li>
+      <li class="breadcrumb-item active">topo.config</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/topo/config/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-topo.config">
+<span id="topo-config"></span><h1>topo.config<a class="headerlink" href="#module-topo.config" title="Link to this heading"></a></h1>
+<p>Default class configurations for flow generation and postprocessing.</p>
+<p>All postprocessing parameters are resolution-dependent, derived from
+GT instance statistics (see topo/scripts/gt_stats/ANALYSIS.md).</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.config.RESOLUTION" title="topo.config.RESOLUTION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RESOLUTION</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#topo.config.EVALUATED_INSTANCE_CLASSES" title="topo.config.EVALUATED_INSTANCE_CLASSES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EVALUATED_INSTANCE_CLASSES</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.config.ClassConfig" title="topo.config.ClassConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClassConfig</span></code></a></p></td>
+<td><p>dict() -&gt; new empty dictionary</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.config.get_instance_class_config" title="topo.config.get_instance_class_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instance_class_config</span></code></a>(→ dict[str, ClassConfig])</p></td>
+<td><p>Get flow generation config for a given resolution.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#topo.config.get_postprocess_config" title="topo.config.get_postprocess_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_postprocess_config</span></code></a>(→ dict[str, dict])</p></td>
+<td><p>Get postprocessing config for a given resolution.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="topo.config.RESOLUTION">
+<span class="sig-prename descclassname"><span class="pre">topo.config.</span></span><span class="sig-name descname"><span class="pre">RESOLUTION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#topo.config.RESOLUTION" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="topo.config.ClassConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topo.config.</span></span><span class="sig-name descname"><span class="pre">ClassConfig</span></span><a class="headerlink" href="#topo.config.ClassConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object’s</p>
+<blockquote>
+<div><p>(key, value) pairs</p>
+</div></blockquote>
+<dl>
+<dt>dict(iterable) -&gt; new dictionary initialized as if via:</dt><dd><p>d = {}
+for k, v in iterable:</p>
+<blockquote>
+<div><p>d[k] = v</p>
+</div></blockquote>
+</dd>
+<dt>dict(<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs) -&gt; new dictionary initialized with the name=value pairs</dt><dd><p>in the keyword argument list.  For example:  dict(one=1, two=2)</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topo.config.ClassConfig.group">
+<span class="sig-name descname"><span class="pre">group</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#topo.config.ClassConfig.group" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topo.config.ClassConfig.flow_type">
+<span class="sig-name descname"><span class="pre">flow_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#topo.config.ClassConfig.flow_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topo.config.ClassConfig.diffusion_iters">
+<span class="sig-name descname"><span class="pre">diffusion_iters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#topo.config.ClassConfig.diffusion_iters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topo.config.ClassConfig.boundary_only">
+<span class="sig-name descname"><span class="pre">boundary_only</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#topo.config.ClassConfig.boundary_only" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="topo.config.ClassConfig.boundary_width">
+<span class="sig-name descname"><span class="pre">boundary_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#topo.config.ClassConfig.boundary_width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="topo.config.EVALUATED_INSTANCE_CLASSES">
+<span class="sig-prename descclassname"><span class="pre">topo.config.</span></span><span class="sig-name descname"><span class="pre">EVALUATED_INSTANCE_CLASSES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['nuc',</span> <span class="pre">'ves',</span> <span class="pre">'endo',</span> <span class="pre">'lyso',</span> <span class="pre">'ld',</span> <span class="pre">'perox',</span> <span class="pre">'mito',</span> <span class="pre">'mt',</span> <span class="pre">'cell']</span></em><a class="headerlink" href="#topo.config.EVALUATED_INSTANCE_CLASSES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.config.get_instance_class_config">
+<span class="sig-prename descclassname"><span class="pre">topo.config.</span></span><span class="sig-name descname"><span class="pre">get_instance_class_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution_nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#topo.config.ClassConfig" title="topo.config.ClassConfig"><span class="pre">ClassConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topo.config.get_instance_class_config" title="Link to this definition"></a></dt>
+<dd><p>Get flow generation config for a given resolution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resolution_nm</strong> – Resolution in nm (8, 16, 32, or 64).
+Defaults to the module-level RESOLUTION variable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict mapping class name to flow generation parameters.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If resolution_nm is None and RESOLUTION is not set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.config.get_postprocess_config">
+<span class="sig-prename descclassname"><span class="pre">topo.config.</span></span><span class="sig-name descname"><span class="pre">get_postprocess_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution_nm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topo.config.get_postprocess_config" title="Link to this definition"></a></dt>
+<dd><p>Get postprocessing config for a given resolution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>resolution_nm</strong> – Resolution in nm (8, 16, 32, or 64).
+Defaults to the module-level RESOLUTION variable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict mapping class name to postprocessing parameters.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If resolution_nm is None and RESOLUTION is not set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="topo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../flow/index.html" class="btn btn-neutral float-right" title="topo.flow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Marwan Zouinkhi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

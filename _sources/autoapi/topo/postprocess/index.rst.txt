@@ -1,0 +1,150 @@
+topo.postprocess
+================
+
+.. py:module:: topo.postprocess
+
+.. autoapi-nested-parse::
+
+   Instance segmentation postprocessing: flow tracking + convergence clustering.
+
+   Converts predicted flow fields into instance labels via:
+   1. Euler integration — track each foreground voxel along the flow field
+   2. Convergence clustering — group voxels by where they end up (grid hash + union-find)
+   3. Optional cleanup — split disconnected components, orphan recovery, flow QC
+
+   Three morphology groups with different strategies:
+   - Group 1 (convex): standard tracking + clustering
+   - Group 2 (elongated): tracking + clustering + split disconnected components
+   - Group 3 (thin): tracking + clustering + split + orphan recovery
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   topo.postprocess.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   topo.postprocess.run_instance_segmentation
+   topo.postprocess.postprocess_single
+   topo.postprocess.track_flows
+   topo.postprocess.cluster_convergence
+   topo.postprocess.split_disconnected
+   topo.postprocess.remove_bad_flow_masks
+   topo.postprocess.compact_relabel
+   topo.postprocess.filter_small
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:function:: run_instance_segmentation(semantic_pred: numpy.ndarray, flow_pred: numpy.ndarray, class_names: Optional[list[str]] = None, class_config: Optional[Dict[str, dict]] = None, flow_error_threshold: float = 0.0) -> Dict[str, numpy.ndarray]
+
+   Convert semantic predictions + flow fields into instance labels.
+
+   :param semantic_pred: [N_classes, D, H, W] per-class probabilities.
+   :param flow_pred: [N*3, D, H, W] per-class flow predictions.
+   :param class_names: List of N class names. Defaults to EVALUATED_INSTANCE_CLASSES.
+   :param class_config: Per-class postprocessing config. Defaults to resolution-based config.
+   :param flow_error_threshold: If > 0, discard masks whose recomputed flows
+                                differ from predicted flows by more than this MSE threshold.
+
+   :returns: Dict mapping class name -> [D, H, W] int32 instance labels.
+
+
+.. py:function:: postprocess_single(sem_mask: numpy.ndarray, flow: numpy.ndarray, n_steps: int = 100, step_size: float = 1.0, convergence_radius: float = 4.0, min_size: int = 50, group: int = 1) -> numpy.ndarray
+
+   Postprocess a single class: track flows → cluster → cleanup.
+
+   :param sem_mask: [D, H, W] bool — foreground mask.
+   :param flow: [3, D, H, W] float — flow field (dz, dy, dx).
+   :param n_steps: Euler integration steps.
+   :param step_size: Step size per iteration.
+   :param convergence_radius: Merge clusters within this radius.
+   :param min_size: Remove instances smaller than this.
+   :param group: Morphology group (1=convex, 2=elongated, 3=thin).
+
+   :returns: [D, H, W] int32 — instance labels.
+   :rtype: instances
+
+
+.. py:function:: track_flows(sem_mask: numpy.ndarray, flow: numpy.ndarray, n_steps: int, step_size: float = 1.0) -> tuple[numpy.ndarray, numpy.ndarray]
+
+   Euler integration: move each foreground voxel along the flow field.
+
+   :param sem_mask: [D, H, W] bool — foreground mask.
+   :param flow: [3, D, H, W] float — predicted flow (dz, dy, dx).
+   :param n_steps: Number of integration steps.
+   :param step_size: Distance per step.
+
+   :returns: [N, 3] int — original voxel positions.
+             final_positions: [N, 3] float64 — where particles ended up.
+   :rtype: fg_coords
+
+
+.. py:function:: cluster_convergence(fg_coords: numpy.ndarray, final_positions: numpy.ndarray, volume_shape: tuple, convergence_radius: float, min_size: int) -> numpy.ndarray
+
+   Cluster particles by final positions using grid hashing + union-find.
+
+   :param fg_coords: [N, 3] int — original voxel coords.
+   :param final_positions: [N, 3] float — converged positions.
+   :param volume_shape: (D, H, W).
+   :param convergence_radius: Merge clusters within this radius.
+   :param min_size: Remove clusters smaller than this.
+
+   :returns: [D, H, W] int32 — instance labels.
+   :rtype: instances
+
+
+.. py:function:: split_disconnected(instances: numpy.ndarray, min_fragment_ratio: float = 0.1) -> numpy.ndarray
+
+   Split disconnected components, absorbing small fragments into nearest.
+
+   When an elongated instance (e.g. mito) gets clustered correctly but has
+   a thin bridge that breaks connectivity, naive splitting creates spurious
+   fragments.  Instead, we only keep components above ``min_fragment_ratio``
+   of the parent instance size.  Smaller fragments are reassigned to the
+   nearest large component via distance transform.
+
+   :param instances: [D, H, W] int32 — instance labels.
+   :param min_fragment_ratio: Components smaller than this fraction of the
+                              parent instance are absorbed rather than split off.
+
+   :returns: Relabeled instance volume.
+
+
+.. py:function:: remove_bad_flow_masks(instances: numpy.ndarray, pred_flow: numpy.ndarray, threshold: float = 0.4) -> numpy.ndarray
+
+   Discard masks whose recomputed flows disagree with predicted flows.
+
+   For each instance, compute unit vectors from voxels to center of mass,
+   then compare to the network's predicted flows. Masks with MSE > threshold
+   are removed.
+
+   :param instances: [D, H, W] int32 — instance labels.
+   :param pred_flow: [3, D, H, W] float — predicted flow field.
+   :param threshold: MSE threshold above which masks are discarded.
+
+   :returns: [D, H, W] int32 — filtered instance labels.
+   :rtype: instances
+
+
+.. py:function:: compact_relabel(instances: numpy.ndarray) -> numpy.ndarray
+
+   Relabel instance IDs to be contiguous starting from 1.
+
+
+.. py:function:: filter_small(instances: numpy.ndarray, min_size: int) -> numpy.ndarray
+
+   Remove instances smaller than min_size and compact relabel.
+
+

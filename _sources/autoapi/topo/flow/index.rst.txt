@@ -1,0 +1,111 @@
+topo.flow
+=========
+
+.. py:module:: topo.flow
+
+.. autoapi-nested-parse::
+
+   CPU flow field generation using NumPy/SciPy.
+
+   Two strategies:
+   - Direct flows: unit vectors pointing from each voxel to instance center of mass.
+     Works well for convex shapes (nuclei, vesicles, etc.).
+   - Diffusion flows: solve the heat equation inside each instance, then take the
+     gradient. Flows follow the object topology, handling non-convex shapes like
+     mitochondria that would fail with direct center-of-mass vectors.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   topo.flow.generate_direct_flows
+   topo.flow.generate_diffusion_flows
+   topo.flow.compute_boundary_map
+   topo.flow.compute_flow_targets
+
+
+Module Contents
+---------------
+
+.. py:function:: generate_direct_flows(instance_mask: numpy.ndarray, spatial_mask: Optional[numpy.ndarray] = None) -> numpy.ndarray
+
+   Generate unit vectors from each voxel to its instance's center.
+
+   For instances fully inside the annotated region, the center is the
+   center of mass.  For instances touching the crop boundary
+   (spatial_mask=0), the center is the distance-transform peak — the
+   point farthest from any edge — which is robust to cropping.
+
+   :param instance_mask: [D, H, W] int array of instance IDs (0 = background).
+   :param spatial_mask: [D, H, W] float/bool — 1 inside annotated region.
+                        If None, center of mass is used for all instances.
+
+   :returns: [3, D, H, W] float32 — unit flow vectors (dz, dy, dx).
+   :rtype: flows
+
+
+.. py:function:: generate_diffusion_flows(instance_mask: numpy.ndarray, n_iter: int = 200, adaptive_iters: bool = True, adaptive_factor: int = 6, spatial_mask: Optional[numpy.ndarray] = None) -> numpy.ndarray
+
+   Generate topology-aware flows via heat equation diffusion.
+
+   For each instance:
+   1. Initialize a scalar field with coordinate values inside the mask.
+   2. Iteratively diffuse (Laplacian smoothing) within the instance.
+   3. Take the spatial gradient to obtain the flow direction.
+
+   Boundary conditions:
+   - Annotation boundaries (spatial_mask=0): Neumann (free diffusion), so
+     cut instances don't pile up against the crop edge.
+   - True background (spatial_mask=1, instance=0): Dirichlet=0, so flow
+     points inward at real boundaries.
+
+   :param instance_mask: [D, H, W] int array of instance IDs (0 = background).
+   :param n_iter: Maximum diffusion iterations (cap for adaptive).
+   :param adaptive_iters: If True, scale iterations with instance extent.
+   :param adaptive_factor: Multiplier for adaptive iteration count.
+   :param spatial_mask: [D, H, W] float/bool — 1 inside annotated region.
+                        If None, Dirichlet=0 is used everywhere.
+
+   :returns: [3, D, H, W] float32 — unit flow vectors (dz, dy, dx).
+   :rtype: flows
+
+
+.. py:function:: compute_boundary_map(instance_mask: numpy.ndarray, dilation_width: int = 2) -> numpy.ndarray
+
+   Compute inter-instance boundary map.
+
+   Returns 1.0 where adjacent voxels have different non-zero instance IDs,
+   dilated by ``dilation_width``.
+
+   :param instance_mask: [D, H, W] int array of instance IDs.
+   :param dilation_width: Boundary dilation in voxels.
+
+   :returns: [D, H, W] float32 boundary map.
+   :rtype: boundary
+
+
+.. py:function:: compute_flow_targets(instance_ids: numpy.ndarray, class_names: Optional[list[str]] = None, class_config: Optional[dict] = None, resolution_nm: Optional[int] = None, diffusion_iters: int = 200, adaptive_iters: bool = True, adaptive_factor: int = 6, spatial_mask: Optional[numpy.ndarray] = None) -> tuple[numpy.ndarray, numpy.ndarray]
+
+   Compute per-class flow targets from instance ID volumes.
+
+   Each class gets 3 flow channels (dz, dy, dx). Background voxels get
+   flow = (0, 0, 0). Flow type (direct vs. diffusion) is determined by
+   class_config.
+
+   :param instance_ids: [N, D, H, W] int32 — instance IDs per class.
+   :param class_names: List of N class names. Defaults to EVALUATED_INSTANCE_CLASSES.
+   :param class_config: Per-class config dict. Defaults to resolution-based config.
+   :param resolution_nm: Resolution in nm, used to select default class_config.
+   :param diffusion_iters: Max diffusion iterations.
+   :param adaptive_iters: Scale iterations with instance extent.
+   :param adaptive_factor: Multiplier for adaptive iteration count.
+   :param spatial_mask: [D, H, W] float/bool — 1 inside annotated region.
+
+   :returns: [N*3, D, H, W] float32 — per-class flow unit vectors.
+             class_fg: [N, D, H, W] float32 — per-class foreground masks.
+   :rtype: flows
+
+

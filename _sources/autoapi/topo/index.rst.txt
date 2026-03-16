@@ -1,0 +1,31 @@
+topo
+====
+
+.. py:module:: topo
+
+.. autoapi-nested-parse::
+
+   topo — Topology-aware diffusion-based flow field generation for 3D instance segmentation.
+
+   Generates 3D vector fields that point toward instance centers using either:
+   - Direct flows: unit vectors to center of mass (for convex shapes)
+   - Diffusion flows: heat-equation-based flows that follow object topology (for non-convex shapes)
+
+   Includes postprocessing to convert flow fields into instance labels via
+   Euler integration and convergence clustering.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/topo/config/index
+   /autoapi/topo/flow/index
+   /autoapi/topo/flow_gpu/index
+   /autoapi/topo/postprocess/index
+   /autoapi/topo/stitch/index
+
+

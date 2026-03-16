@@ -1,0 +1,71 @@
+topo.flow_gpu
+=============
+
+.. py:module:: topo.flow_gpu
+
+.. autoapi-nested-parse::
+
+   GPU-accelerated flow field generation using PyTorch conv3d.
+
+   Drop-in replacement for the CPU flow functions, running ~50-100x faster
+   by expressing the heat equation diffusion as 3D convolutions on GPU.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   topo.flow_gpu.generate_direct_flows_gpu
+   topo.flow_gpu.generate_diffusion_flows_gpu
+   topo.flow_gpu.compute_flow_targets_gpu
+
+
+Module Contents
+---------------
+
+.. py:function:: generate_direct_flows_gpu(instance_mask: torch.Tensor) -> torch.Tensor
+
+   GPU direct flows: unit vectors to center of mass.
+
+   :param instance_mask: [D, H, W] int — instance IDs (0 = background).
+
+   :returns: [3, D, H, W] float32.
+   :rtype: flows
+
+
+.. py:function:: generate_diffusion_flows_gpu(instance_mask: torch.Tensor, n_iter: int = 200, adaptive_iters: bool = True, adaptive_factor: int = 6, spatial_mask: Optional[torch.Tensor] = None) -> torch.Tensor
+
+   GPU diffusion flows: topology-aware via heat equation.
+
+   :param instance_mask: [D, H, W] int — instance IDs (0 = background).
+   :param n_iter: Max diffusion iterations.
+   :param adaptive_iters: Scale iterations with instance extent.
+   :param adaptive_factor: Multiplier for adaptive iteration count.
+   :param spatial_mask: [D, H, W] float or None — 1 inside annotated region.
+
+   :returns: [3, D, H, W] float32.
+   :rtype: flows
+
+
+.. py:function:: compute_flow_targets_gpu(instance_ids: torch.Tensor, class_names: list[str] | None = None, class_config: dict | None = None, spatial_mask: torch.Tensor | None = None, diffusion_iters: int = 50, adaptive_iters: bool = True, adaptive_factor: int = 6) -> tuple[torch.Tensor, torch.Tensor]
+
+   Compute per-class flow targets on GPU.
+
+   Drop-in replacement for :func:`topo.compute_flow_targets` but operates
+   on GPU tensors.
+
+   :param instance_ids: [B, N, D, H, W] int — instance IDs per class.
+   :param class_names: List of N class names.
+   :param class_config: Per-class config dict.
+   :param spatial_mask: [B, 1, D, H, W] float or None.
+   :param diffusion_iters: Max diffusion iterations.
+   :param adaptive_iters: Scale iterations with instance extent.
+   :param adaptive_factor: Multiplier for adaptive iteration count.
+
+   :returns: [B, N*3, D, H, W] float32.
+             class_fg: [B, N, D, H, W] float32.
+   :rtype: flows
+
+

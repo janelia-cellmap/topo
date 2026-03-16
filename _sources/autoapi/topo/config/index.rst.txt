@@ -1,0 +1,113 @@
+topo.config
+===========
+
+.. py:module:: topo.config
+
+.. autoapi-nested-parse::
+
+   Default class configurations for flow generation and postprocessing.
+
+   All postprocessing parameters are resolution-dependent, derived from
+   GT instance statistics (see topo/scripts/gt_stats/ANALYSIS.md).
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   topo.config.RESOLUTION
+   topo.config.EVALUATED_INSTANCE_CLASSES
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   topo.config.ClassConfig
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   topo.config.get_instance_class_config
+   topo.config.get_postprocess_config
+
+
+Module Contents
+---------------
+
+.. py:data:: RESOLUTION
+   :type:  int | None
+   :value: None
+
+
+.. py:class:: ClassConfig
+
+   Bases: :py:obj:`TypedDict`
+
+
+   dict() -> new empty dictionary
+   dict(mapping) -> new dictionary initialized from a mapping object's
+       (key, value) pairs
+   dict(iterable) -> new dictionary initialized as if via:
+       d = {}
+       for k, v in iterable:
+           d[k] = v
+   dict(**kwargs) -> new dictionary initialized with the name=value pairs
+       in the keyword argument list.  For example:  dict(one=1, two=2)
+
+
+   .. py:attribute:: group
+      :type:  int
+
+
+   .. py:attribute:: flow_type
+      :type:  str
+
+
+   .. py:attribute:: diffusion_iters
+      :type:  int
+
+
+   .. py:attribute:: boundary_only
+      :type:  bool
+
+
+   .. py:attribute:: boundary_width
+      :type:  int
+
+
+.. py:data:: EVALUATED_INSTANCE_CLASSES
+   :type:  list[str]
+   :value: ['nuc', 'ves', 'endo', 'lyso', 'ld', 'perox', 'mito', 'mt', 'cell']
+
+
+.. py:function:: get_instance_class_config(resolution_nm: int | None = None) -> dict[str, ClassConfig]
+
+   Get flow generation config for a given resolution.
+
+   :param resolution_nm: Resolution in nm (8, 16, 32, or 64).
+                         Defaults to the module-level RESOLUTION variable.
+
+   :returns: Dict mapping class name to flow generation parameters.
+
+   :raises ValueError: If resolution_nm is None and RESOLUTION is not set.
+
+
+.. py:function:: get_postprocess_config(resolution_nm: int | None = None) -> dict[str, dict]
+
+   Get postprocessing config for a given resolution.
+
+   :param resolution_nm: Resolution in nm (8, 16, 32, or 64).
+                         Defaults to the module-level RESOLUTION variable.
+
+   :returns: Dict mapping class name to postprocessing parameters.
+
+   :raises ValueError: If resolution_nm is None and RESOLUTION is not set.
+
+

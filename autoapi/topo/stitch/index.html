@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>topo.stitch &mdash; topo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="topo.postprocess" href="../postprocess/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            topo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tutorial_full_volume.html">Full-Volume Instance Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tutorial_tiled_stitching.html">Tiled Stitching: Processing Large Volumes in Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">topo</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../config/index.html">topo.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../flow/index.html">topo.flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../flow_gpu/index.html">topo.flow_gpu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../postprocess/index.html">topo.postprocess</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">topo.stitch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">topo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">topo</a></li>
+      <li class="breadcrumb-item active">topo.stitch</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/topo/stitch/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-topo.stitch">
+<span id="topo-stitch"></span><h1>topo.stitch<a class="headerlink" href="#module-topo.stitch" title="Link to this heading"></a></h1>
+<p>Stitching utilities for tiled inference.</p>
+<p>Split a volume into overlapping sub-crops, process each independently,
+then blend results back into the full volume using boundary-aware cosine
+weighting.  The key insight is that cosine tapering should only be applied
+at <em>internal</em> subcrop seams (where two tiles overlap), not at volume
+boundaries where there is no neighbor to blend with.</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.stitch.compute_subcrop_slices" title="topo.stitch.compute_subcrop_slices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_subcrop_slices</span></code></a>(→ list[tuple[slice, Ellipsis]])</p></td>
+<td><p>Compute sub-crop slices with overlap for each axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#topo.stitch.build_spatial_mask" title="topo.stitch.build_spatial_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_spatial_mask</span></code></a>(→ numpy.ndarray)</p></td>
+<td><p>Spatial mask: 1 in interior, 0 at boundary faces.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.stitch.cosine_blend_weight" title="topo.stitch.cosine_blend_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cosine_blend_weight</span></code></a>(→ numpy.ndarray)</p></td>
+<td><p>Cosine-ramp weight volume for blending overlapping sub-crops.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#topo.stitch.stitch_flows" title="topo.stitch.stitch_flows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stitch_flows</span></code></a>(→ numpy.ndarray)</p></td>
+<td><p>Stitch per-subcrop flows into a full volume using cosine blending.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.stitch.stitch_labels" title="topo.stitch.stitch_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stitch_labels</span></code></a>(→ numpy.ndarray)</p></td>
+<td><p>Stitch per-subcrop label volumes using highest-weight-wins in overlaps.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#topo.stitch.stitch_volumes" title="topo.stitch.stitch_volumes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stitch_volumes</span></code></a>(→ numpy.ndarray)</p></td>
+<td><p>Stitch per-subcrop multi-channel volumes (e.g. affinities) using cosine blending.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.stitch.compute_subcrop_slices">
+<span class="sig-prename descclassname"><span class="pre">topo.stitch.</span></span><span class="sig-name descname"><span class="pre">compute_subcrop_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">slice</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topo.stitch.compute_subcrop_slices" title="Link to this definition"></a></dt>
+<dd><p>Compute sub-crop slices with overlap for each axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>volume_shape</strong> – (D, H, W) of the full volume.</p></li>
+<li><p><strong>crop_size</strong> – (cd, ch, cw) size of each sub-crop.</p></li>
+<li><p><strong>overlap</strong> – (od, oh, ow) overlap between adjacent sub-crops.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples of slices [(slice_d, slice_h, slice_w), …].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.stitch.build_spatial_mask">
+<span class="sig-prename descclassname"><span class="pre">topo.stitch.</span></span><span class="sig-name descname"><span class="pre">build_spatial_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#topo.stitch.build_spatial_mask" title="Link to this definition"></a></dt>
+<dd><p>Spatial mask: 1 in interior, 0 at boundary faces.</p>
+<p>Used to mark subcrop boundaries so diffusion uses Neumann BC there
+(allowing flow to continue past the crop edge).</p>
+<p>Note: Do NOT use this for the full volume if the volume boundary is
+real (not a crop edge).  Pass <code class="docutils literal notranslate"><span class="pre">spatial_mask=None</span></code> to flow generation
+instead, so that Dirichlet BC keeps flow pointing inward.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.stitch.cosine_blend_weight">
+<span class="sig-prename descclassname"><span class="pre">topo.stitch.</span></span><span class="sig-name descname"><span class="pre">cosine_blend_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">at_volume_boundary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#topo.stitch.cosine_blend_weight" title="Link to this definition"></a></dt>
+<dd><p>Cosine-ramp weight volume for blending overlapping sub-crops.</p>
+<p>At internal subcrop seams the weight tapers from 1 (center) to 0 (edge),
+enabling smooth blending with the neighboring tile.  At volume boundaries
+(no neighbor), the weight stays at 1 so the flow is fully preserved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> – (d, h, w) of the subcrop.</p></li>
+<li><p><strong>at_volume_boundary</strong> – List of 6 bools — [z_lo, z_hi, y_lo, y_hi, x_lo, x_hi].
+True means that face sits at the volume boundary (no overlap).
+If None, all faces are tapered (original behavior).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[d, h, w] float32 weight volume.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.stitch.stitch_flows">
+<span class="sig-prename descclassname"><span class="pre">topo.stitch.</span></span><span class="sig-name descname"><span class="pre">stitch_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcrop_slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">slice</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcrop_flows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#topo.stitch.stitch_flows" title="Link to this definition"></a></dt>
+<dd><p>Stitch per-subcrop flows into a full volume using cosine blending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>volume_shape</strong> – (D, H, W) of the full volume.</p></li>
+<li><p><strong>subcrop_slices</strong> – List of (slice_d, slice_h, slice_w) tuples.</p></li>
+<li><p><strong>subcrop_flows</strong> – List of [3, cd, ch, cw] flow arrays.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[3, D, H, W] float32 blended flow field.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>stitched</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.stitch.stitch_labels">
+<span class="sig-prename descclassname"><span class="pre">topo.stitch.</span></span><span class="sig-name descname"><span class="pre">stitch_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcrop_slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">slice</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcrop_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#topo.stitch.stitch_labels" title="Link to this definition"></a></dt>
+<dd><p>Stitch per-subcrop label volumes using highest-weight-wins in overlaps.</p>
+<p>Each voxel gets the label from whichever subcrop has the highest cosine
+blend weight at that position (i.e. the subcrop whose center is closest).
+Labels are relabeled to avoid collisions across sub-crops.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>volume_shape</strong> – (D, H, W) of the full volume.</p></li>
+<li><p><strong>subcrop_slices</strong> – List of (slice_d, slice_h, slice_w) tuples.</p></li>
+<li><p><strong>subcrop_labels</strong> – List of [cd, ch, cw] int label arrays.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[D, H, W] int32 stitched labels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.stitch.stitch_volumes">
+<span class="sig-prename descclassname"><span class="pre">topo.stitch.</span></span><span class="sig-name descname"><span class="pre">stitch_volumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcrop_slices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">slice</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subcrop_volumes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#topo.stitch.stitch_volumes" title="Link to this definition"></a></dt>
+<dd><p>Stitch per-subcrop multi-channel volumes (e.g. affinities) using cosine blending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>volume_shape</strong> – (D, H, W) of the full volume.</p></li>
+<li><p><strong>subcrop_slices</strong> – List of (slice_d, slice_h, slice_w) tuples.</p></li>
+<li><p><strong>subcrop_volumes</strong> – List of [C, cd, ch, cw] arrays (or [cd, ch, cw] if n_channels=1).</p></li>
+<li><p><strong>n_channels</strong> – Number of channels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[C, D, H, W] float64 blended volume (or [D, H, W] if n_channels=1).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../postprocess/index.html" class="btn btn-neutral float-left" title="topo.postprocess" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Marwan Zouinkhi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

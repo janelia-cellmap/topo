@@ -1,0 +1,111 @@
+topo.stitch
+===========
+
+.. py:module:: topo.stitch
+
+.. autoapi-nested-parse::
+
+   Stitching utilities for tiled inference.
+
+   Split a volume into overlapping sub-crops, process each independently,
+   then blend results back into the full volume using boundary-aware cosine
+   weighting.  The key insight is that cosine tapering should only be applied
+   at *internal* subcrop seams (where two tiles overlap), not at volume
+   boundaries where there is no neighbor to blend with.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   topo.stitch.compute_subcrop_slices
+   topo.stitch.build_spatial_mask
+   topo.stitch.cosine_blend_weight
+   topo.stitch.stitch_flows
+   topo.stitch.stitch_labels
+   topo.stitch.stitch_volumes
+
+
+Module Contents
+---------------
+
+.. py:function:: compute_subcrop_slices(volume_shape: tuple[int, Ellipsis], crop_size: tuple[int, Ellipsis], overlap: tuple[int, Ellipsis]) -> list[tuple[slice, Ellipsis]]
+
+   Compute sub-crop slices with overlap for each axis.
+
+   :param volume_shape: (D, H, W) of the full volume.
+   :param crop_size: (cd, ch, cw) size of each sub-crop.
+   :param overlap: (od, oh, ow) overlap between adjacent sub-crops.
+
+   :returns: List of tuples of slices [(slice_d, slice_h, slice_w), ...].
+
+
+.. py:function:: build_spatial_mask(shape: tuple[int, Ellipsis]) -> numpy.ndarray
+
+   Spatial mask: 1 in interior, 0 at boundary faces.
+
+   Used to mark subcrop boundaries so diffusion uses Neumann BC there
+   (allowing flow to continue past the crop edge).
+
+   Note: Do NOT use this for the full volume if the volume boundary is
+   real (not a crop edge).  Pass ``spatial_mask=None`` to flow generation
+   instead, so that Dirichlet BC keeps flow pointing inward.
+
+
+.. py:function:: cosine_blend_weight(shape: tuple[int, Ellipsis], at_volume_boundary: Optional[list[bool]] = None) -> numpy.ndarray
+
+   Cosine-ramp weight volume for blending overlapping sub-crops.
+
+   At internal subcrop seams the weight tapers from 1 (center) to 0 (edge),
+   enabling smooth blending with the neighboring tile.  At volume boundaries
+   (no neighbor), the weight stays at 1 so the flow is fully preserved.
+
+   :param shape: (d, h, w) of the subcrop.
+   :param at_volume_boundary: List of 6 bools — [z_lo, z_hi, y_lo, y_hi, x_lo, x_hi].
+                              True means that face sits at the volume boundary (no overlap).
+                              If None, all faces are tapered (original behavior).
+
+   :returns: [d, h, w] float32 weight volume.
+
+
+.. py:function:: stitch_flows(volume_shape: tuple[int, int, int], subcrop_slices: list[tuple[slice, Ellipsis]], subcrop_flows: list[numpy.ndarray]) -> numpy.ndarray
+
+   Stitch per-subcrop flows into a full volume using cosine blending.
+
+   :param volume_shape: (D, H, W) of the full volume.
+   :param subcrop_slices: List of (slice_d, slice_h, slice_w) tuples.
+   :param subcrop_flows: List of [3, cd, ch, cw] flow arrays.
+
+   :returns: [3, D, H, W] float32 blended flow field.
+   :rtype: stitched
+
+
+.. py:function:: stitch_labels(volume_shape: tuple[int, int, int], subcrop_slices: list[tuple[slice, Ellipsis]], subcrop_labels: list[numpy.ndarray]) -> numpy.ndarray
+
+   Stitch per-subcrop label volumes using highest-weight-wins in overlaps.
+
+   Each voxel gets the label from whichever subcrop has the highest cosine
+   blend weight at that position (i.e. the subcrop whose center is closest).
+   Labels are relabeled to avoid collisions across sub-crops.
+
+   :param volume_shape: (D, H, W) of the full volume.
+   :param subcrop_slices: List of (slice_d, slice_h, slice_w) tuples.
+   :param subcrop_labels: List of [cd, ch, cw] int label arrays.
+
+   :returns: [D, H, W] int32 stitched labels.
+
+
+.. py:function:: stitch_volumes(volume_shape: tuple[int, int, int], subcrop_slices: list[tuple[slice, Ellipsis]], subcrop_volumes: list[numpy.ndarray], n_channels: int = 1) -> numpy.ndarray
+
+   Stitch per-subcrop multi-channel volumes (e.g. affinities) using cosine blending.
+
+   :param volume_shape: (D, H, W) of the full volume.
+   :param subcrop_slices: List of (slice_d, slice_h, slice_w) tuples.
+   :param subcrop_volumes: List of [C, cd, ch, cw] arrays (or [cd, ch, cw] if n_channels=1).
+   :param n_channels: Number of channels.
+
+   :returns: [C, D, H, W] float64 blended volume (or [D, H, W] if n_channels=1).
+
+

@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>topo.flow_gpu &mdash; topo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="topo.postprocess" href="../postprocess/index.html" />
+    <link rel="prev" title="topo.flow" href="../flow/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            topo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tutorial_full_volume.html">Full-Volume Instance Segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tutorial_tiled_stitching.html">Tiled Stitching: Processing Large Volumes in Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">topo</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../config/index.html">topo.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../flow/index.html">topo.flow</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">topo.flow_gpu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../postprocess/index.html">topo.postprocess</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stitch/index.html">topo.stitch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">topo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">topo</a></li>
+      <li class="breadcrumb-item active">topo.flow_gpu</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/topo/flow_gpu/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-topo.flow_gpu">
+<span id="topo-flow-gpu"></span><h1>topo.flow_gpu<a class="headerlink" href="#module-topo.flow_gpu" title="Link to this heading"></a></h1>
+<p>GPU-accelerated flow field generation using PyTorch conv3d.</p>
+<p>Drop-in replacement for the CPU flow functions, running ~50-100x faster
+by expressing the heat equation diffusion as 3D convolutions on GPU.</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.flow_gpu.generate_direct_flows_gpu" title="topo.flow_gpu.generate_direct_flows_gpu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_direct_flows_gpu</span></code></a>(→ torch.Tensor)</p></td>
+<td><p>GPU direct flows: unit vectors to center of mass.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#topo.flow_gpu.generate_diffusion_flows_gpu" title="topo.flow_gpu.generate_diffusion_flows_gpu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_diffusion_flows_gpu</span></code></a>(→ torch.Tensor)</p></td>
+<td><p>GPU diffusion flows: topology-aware via heat equation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#topo.flow_gpu.compute_flow_targets_gpu" title="topo.flow_gpu.compute_flow_targets_gpu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_flow_targets_gpu</span></code></a>(→ tuple[torch.Tensor, ...)</p></td>
+<td><p>Compute per-class flow targets on GPU.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.flow_gpu.generate_direct_flows_gpu">
+<span class="sig-prename descclassname"><span class="pre">topo.flow_gpu.</span></span><span class="sig-name descname"><span class="pre">generate_direct_flows_gpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#topo.flow_gpu.generate_direct_flows_gpu" title="Link to this definition"></a></dt>
+<dd><p>GPU direct flows: unit vectors to center of mass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instance_mask</strong> – [D, H, W] int — instance IDs (0 = background).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[3, D, H, W] float32.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>flows</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.flow_gpu.generate_diffusion_flows_gpu">
+<span class="sig-prename descclassname"><span class="pre">topo.flow_gpu.</span></span><span class="sig-name descname"><span class="pre">generate_diffusion_flows_gpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adaptive_iters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adaptive_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="headerlink" href="#topo.flow_gpu.generate_diffusion_flows_gpu" title="Link to this definition"></a></dt>
+<dd><p>GPU diffusion flows: topology-aware via heat equation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance_mask</strong> – [D, H, W] int — instance IDs (0 = background).</p></li>
+<li><p><strong>n_iter</strong> – Max diffusion iterations.</p></li>
+<li><p><strong>adaptive_iters</strong> – Scale iterations with instance extent.</p></li>
+<li><p><strong>adaptive_factor</strong> – Multiplier for adaptive iteration count.</p></li>
+<li><p><strong>spatial_mask</strong> – [D, H, W] float or None — 1 inside annotated region.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[3, D, H, W] float32.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>flows</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topo.flow_gpu.compute_flow_targets_gpu">
+<span class="sig-prename descclassname"><span class="pre">topo.flow_gpu.</span></span><span class="sig-name descname"><span class="pre">compute_flow_targets_gpu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion_iters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adaptive_iters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adaptive_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#topo.flow_gpu.compute_flow_targets_gpu" title="Link to this definition"></a></dt>
+<dd><p>Compute per-class flow targets on GPU.</p>
+<p>Drop-in replacement for <code class="xref py py-func docutils literal notranslate"><span class="pre">topo.compute_flow_targets()</span></code> but operates
+on GPU tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance_ids</strong> – [B, N, D, H, W] int — instance IDs per class.</p></li>
+<li><p><strong>class_names</strong> – List of N class names.</p></li>
+<li><p><strong>class_config</strong> – Per-class config dict.</p></li>
+<li><p><strong>spatial_mask</strong> – [B, 1, D, H, W] float or None.</p></li>
+<li><p><strong>diffusion_iters</strong> – Max diffusion iterations.</p></li>
+<li><p><strong>adaptive_iters</strong> – Scale iterations with instance extent.</p></li>
+<li><p><strong>adaptive_factor</strong> – Multiplier for adaptive iteration count.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[B, N*3, D, H, W] float32.
+class_fg: [B, N, D, H, W] float32.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>flows</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../flow/index.html" class="btn btn-neutral float-left" title="topo.flow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../postprocess/index.html" class="btn btn-neutral float-right" title="topo.postprocess" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Marwan Zouinkhi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

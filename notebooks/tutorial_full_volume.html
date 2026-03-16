@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full-Volume Instance Segmentation &mdash; topo 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tiled Stitching: Processing Large Volumes in Blocks" href="tutorial_tiled_stitching.html" />
+    <link rel="prev" title="topo — Topology-aware Instance Segmentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            topo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Full-Volume Instance Segmentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create-synthetic-data">1. Create Synthetic Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-diffusion-flows">2. Generate Diffusion Flows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#postprocess-flow-tracking-clustering">3. Postprocess: Flow Tracking + Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_tiled_stitching.html">Tiled Stitching: Processing Large Volumes in Blocks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">topo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Full-Volume Instance Segmentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/tutorial_full_volume.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="full-volume-instance-segmentation">
+<h1>Full-Volume Instance Segmentation<a class="headerlink" href="#full-volume-instance-segmentation" title="Link to this heading"></a></h1>
+<p>This tutorial demonstrates the complete <strong>topo</strong> pipeline on a single volume
+(no tiling):</p>
+<ol class="arabic simple">
+<li><p>Create synthetic instance data</p></li>
+<li><p>Generate diffusion flows</p></li>
+<li><p>Postprocess flows into instance labels</p></li>
+<li><p>Visualize every intermediate step</p></li>
+</ol>
+<section id="create-synthetic-data">
+<h2>1. Create Synthetic Data<a class="headerlink" href="#create-synthetic-data" title="Link to this heading"></a></h2>
+<p>We generate a small 64x64x64 volume with 4 non-overlapping ellipsoidal
+instances of varying sizes and aspect ratios — mimicking organelles like
+mitochondria.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_synthetic_instances</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">n_instances</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a volume with non-overlapping ellipsoidal instances.&quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">vol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">:</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">:</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">inst_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_instances</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Random center (away from edges)</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">margin</span><span class="p">,</span> <span class="n">s</span> <span class="o">-</span> <span class="n">margin</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">]</span>
+        <span class="c1"># Random semi-axes (elongated)</span>
+        <span class="n">radii</span> <span class="o">=</span> <span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+
+        <span class="c1"># Ellipsoid mask</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">coords</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">-</span> <span class="n">center</span><span class="p">[</span><span class="n">ax</span><span class="p">])</span> <span class="o">/</span> <span class="n">radii</span><span class="p">[</span><span class="n">ax</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+
+        <span class="c1"># Only place where empty</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">vol</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">vol</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">inst_id</span>
+
+    <span class="k">return</span> <span class="n">vol</span>
+
+<span class="n">gt_instances</span> <span class="o">=</span> <span class="n">make_synthetic_instances</span><span class="p">()</span>
+<span class="n">n_inst</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">gt_instances</span><span class="p">[</span><span class="n">gt_instances</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Volume shape: </span><span class="si">{</span><span class="n">gt_instances</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Instances: </span><span class="si">{</span><span class="n">n_inst</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Volume shape: (64, 64, 64)
+Instances: 4
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize the ground truth — middle Z-slice</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Z-slice&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Y-slice&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;X-slice&quot;</span><span class="p">)]):</span>
+    <span class="n">mid</span> <span class="o">=</span> <span class="n">gt_instances</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">slc</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">3</span>
+    <span class="n">slc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">mid</span>
+    <span class="n">axes_img</span> <span class="o">=</span> <span class="n">gt_instances</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">slc</span><span class="p">)]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">axes_img</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;nipy_spectral&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GT Instances — </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> (idx=</span><span class="si">{</span><span class="n">mid</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Ground Truth Instance Labels&quot;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/3ecd5afbff7494f2cebaa908fb2368fd6ea8a1fae1251c14208c05a0a97f0474.png" src="../_images/3ecd5afbff7494f2cebaa908fb2368fd6ea8a1fae1251c14208c05a0a97f0474.png" />
+</div>
+</div>
+</section>
+<section id="generate-diffusion-flows">
+<h2>2. Generate Diffusion Flows<a class="headerlink" href="#generate-diffusion-flows" title="Link to this heading"></a></h2>
+<p>The diffusion flow generator solves the heat equation inside each instance,
+then takes the spatial gradient to produce a flow field that points toward
+each instance’s topological center.</p>
+<p>Since this is the full volume (not a crop from a larger dataset), we pass
+<code class="docutils literal notranslate"><span class="pre">spatial_mask=None</span></code> — this uses Dirichlet boundary conditions at the volume
+edge, keeping flow directed inward.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">topo</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_diffusion_flows</span>
+
+<span class="n">flows</span> <span class="o">=</span> <span class="n">generate_diffusion_flows</span><span class="p">(</span>
+    <span class="n">gt_instances</span><span class="p">,</span>
+    <span class="n">n_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">spatial_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># full volume — real boundary</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flow shape: </span><span class="si">{</span><span class="n">flows</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  (3 x D x H x W)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flow dtype: </span><span class="si">{</span><span class="n">flows</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Flow shape: (3, 64, 64, 64)  (3 x D x H x W)
+Flow dtype: float32
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize flow magnitude and direction at mid-Z</span>
+<span class="n">mid_z</span> <span class="o">=</span> <span class="n">gt_instances</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">fg</span> <span class="o">=</span> <span class="n">gt_instances</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<span class="n">flow_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">flows</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># Flow magnitude</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flow_mag</span><span class="p">[</span><span class="n">mid_z</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;hot&quot;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Flow Magnitude&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="c1"># Flow Y component</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flows</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">mid_z</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;RdBu_r&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Flow Y-component&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="c1"># Flow X component</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flows</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">mid_z</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;RdBu_r&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Flow X-component&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diffusion Flows — Z-slice </span><span class="si">{</span><span class="n">mid_z</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/6209a72815f6dcb6cdb10f8e16634dbedaa372850900f170d6bccb5f8b459e49.png" src="../_images/6209a72815f6dcb6cdb10f8e16634dbedaa372850900f170d6bccb5f8b459e49.png" />
+</div>
+</div>
+</section>
+<section id="postprocess-flow-tracking-clustering">
+<h2>3. Postprocess: Flow Tracking + Clustering<a class="headerlink" href="#postprocess-flow-tracking-clustering" title="Link to this heading"></a></h2>
+<p>The postprocessing pipeline:</p>
+<ol class="arabic simple">
+<li><p><strong>Euler integration</strong>: each foreground voxel follows the flow for <code class="docutils literal notranslate"><span class="pre">n_steps</span></code></p></li>
+<li><p><strong>Convergence clustering</strong>: voxels that end up near each other are grouped</p></li>
+<li><p><strong>Small instance filtering</strong>: clusters below <code class="docutils literal notranslate"><span class="pre">min_size</span></code> are removed</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">topo</span><span class="w"> </span><span class="kn">import</span> <span class="n">postprocess_single</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">postprocess_single</span><span class="p">(</span>
+    <span class="n">sem_mask</span><span class="o">=</span><span class="n">fg</span><span class="p">,</span>
+    <span class="n">flow</span><span class="o">=</span><span class="n">flows</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">step_size</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">convergence_radius</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span>
+    <span class="n">min_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">group</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># convex morphology group</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recovered instances: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GT instances: </span><span class="si">{</span><span class="n">n_inst</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Recovered instances: 4
+GT instances: 4
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare GT vs recovered</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gt_instances</span><span class="p">[</span><span class="n">mid_z</span><span class="p">],</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;nipy_spectral&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ground Truth (</span><span class="si">{</span><span class="n">n_inst</span><span class="si">}</span><span class="s2"> instances)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">mid_z</span><span class="p">],</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;nipy_spectral&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recovered (</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s2"> instances)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Full-Volume Pipeline Result&quot;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/4f1eebb4c55169570c04a80538c41cff6853e3ef36526c02fbf60386452d2b9f.png" src="../_images/4f1eebb4c55169570c04a80538c41cff6853e3ef36526c02fbf60386452d2b9f.png" />
+</div>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>The full-volume pipeline correctly recovers all instances:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Output</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Input</p></td>
+<td><p>Synthetic instance mask (64x64x64, 4 instances)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Diffusion flows</p></td>
+<td><p>[3, 64, 64, 64] unit vector field</p></td>
+</tr>
+<tr class="row-even"><td><p>Postprocessing</p></td>
+<td><p>Instance labels matching GT</p></td>
+</tr>
+</tbody>
+</table>
+<p>For larger volumes that don’t fit in memory, see the
+<a class="reference internal" href="tutorial_tiled_stitching.html"><span class="doc std std-doc">Tiled Stitching Tutorial</span></a> which splits the volume
+into overlapping sub-crops and stitches the results.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="topo — Topology-aware Instance Segmentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_tiled_stitching.html" class="btn btn-neutral float-right" title="Tiled Stitching: Processing Large Volumes in Blocks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Marwan Zouinkhi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
