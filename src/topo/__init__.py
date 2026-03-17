@@ -13,12 +13,22 @@ from .flow import (
     generate_direct_flows,
     generate_diffusion_flows,
 )
+from .flow_gpu import (
+    compute_flow_targets_gpu,
+    generate_direct_flows_gpu,
+    generate_diffusion_flows_gpu,
+)
 from .postprocess import (
     run_instance_segmentation,
     postprocess_single,
     track_flows,
     cluster_convergence,
     split_disconnected,
+)
+from .postprocess_gpu import (
+    run_instance_segmentation_gpu,
+    postprocess_single_gpu,
+    track_flows_gpu,
 )
 from .config import (
     EVALUATED_INSTANCE_CLASSES,
@@ -41,12 +51,20 @@ __all__ = [
     "compute_flow_targets",
     "generate_direct_flows",
     "generate_diffusion_flows",
+    # Flow generation (GPU)
+    "compute_flow_targets_gpu",
+    "generate_direct_flows_gpu",
+    "generate_diffusion_flows_gpu",
     # Postprocessing
     "run_instance_segmentation",
     "postprocess_single",
     "track_flows",
     "cluster_convergence",
     "split_disconnected",
+    # Postprocessing (GPU)
+    "run_instance_segmentation_gpu",
+    "postprocess_single_gpu",
+    "track_flows_gpu",
     # Config
     "EVALUATED_INSTANCE_CLASSES",
     "get_instance_class_config",
