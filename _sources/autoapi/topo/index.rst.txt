@@ -26,6 +26,7 @@ Submodules
    /autoapi/topo/flow/index
    /autoapi/topo/flow_gpu/index
    /autoapi/topo/postprocess/index
+   /autoapi/topo/postprocess_gpu/index
    /autoapi/topo/stitch/index
 
 

@@ -1,0 +1,89 @@
+topo.postprocess_gpu
+====================
+
+.. py:module:: topo.postprocess_gpu
+
+.. autoapi-nested-parse::
+
+   GPU-accelerated instance segmentation postprocessing.
+
+   Drop-in replacement for postprocess.run_instance_segmentation that runs
+   Euler integration on GPU (torch tensors). Clustering remains on CPU
+   (union-find is inherently sequential).
+
+   Usage:
+       from topo import run_instance_segmentation_gpu, postprocess_single_gpu
+
+       instances = run_instance_segmentation_gpu(semantic_pred, flow_pred, device="cuda")
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   topo.postprocess_gpu.logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   topo.postprocess_gpu.run_instance_segmentation_gpu
+   topo.postprocess_gpu.postprocess_single_gpu
+   topo.postprocess_gpu.track_flows_gpu
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:function:: run_instance_segmentation_gpu(semantic_pred: numpy.ndarray, flow_pred: numpy.ndarray, device: str = 'cuda', class_names: Optional[list[str]] = None, class_config: Optional[Dict[str, dict]] = None, flow_error_threshold: float = 0.0) -> Dict[str, numpy.ndarray]
+
+   GPU-accelerated instance segmentation from flows.
+
+   :param semantic_pred: [N_classes, D, H, W] per-class probabilities (numpy).
+   :param flow_pred: [N*3, D, H, W] per-class flow predictions (numpy).
+   :param device: torch device string.
+   :param class_names: List of N class names. Defaults to EVALUATED_INSTANCE_CLASSES.
+   :param class_config: Per-class postprocessing config. Defaults to resolution-based config.
+   :param flow_error_threshold: discard masks with flow MSE > threshold (0=disabled).
+
+   :returns: Dict mapping class name -> [D, H, W] int32 instance labels.
+
+
+.. py:function:: postprocess_single_gpu(sem_mask: numpy.ndarray, flow: numpy.ndarray, device: str = 'cuda', n_steps: int = 100, step_size: float = 1.0, convergence_radius: float = 4.0, min_size: int = 50, group: int = 1) -> numpy.ndarray
+
+   GPU postprocess a single class: track flows on GPU -> cluster on CPU -> cleanup.
+
+   :param sem_mask: [D, H, W] bool — foreground mask.
+   :param flow: [3, D, H, W] float — flow field (dz, dy, dx).
+   :param device: torch device string.
+   :param n_steps: Euler integration steps.
+   :param step_size: Step size per iteration.
+   :param convergence_radius: Merge clusters within this radius.
+   :param min_size: Remove instances smaller than this.
+   :param group: Morphology group (1=convex, 2=elongated, 3=thin).
+
+   :returns: [D, H, W] int32 — instance labels.
+   :rtype: instances
+
+
+.. py:function:: track_flows_gpu(sem_mask: numpy.ndarray, flow: torch.Tensor, device: torch.device, n_steps: int, step_size: float = 1.0) -> tuple[numpy.ndarray, numpy.ndarray]
+
+   Euler integration on GPU — all particles update in parallel.
+
+   :param sem_mask: [D, H, W] bool numpy — foreground mask.
+   :param flow: [3, D, H, W] float torch tensor on device.
+   :param device: torch device.
+   :param n_steps: number of integration steps.
+   :param step_size: distance per step.
+
+   :returns: [N, 3] int numpy — original voxel positions.
+             final_positions: [N, 3] float64 numpy — converged positions.
+   :rtype: fg_coords
+
+

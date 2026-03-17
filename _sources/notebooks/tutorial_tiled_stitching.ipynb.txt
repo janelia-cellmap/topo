@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "7a13a63c",
+   "id": "778adfc2",
    "metadata": {},
    "source": [
     "# Tiled Stitching: Processing Large Volumes in Blocks\n",
@@ -19,7 +19,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "21712ab5",
+   "id": "d4cc4233",
    "metadata": {},
    "source": [
     "## 1. Create Synthetic Data\n",
@@ -31,13 +31,13 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "acb047e4",
+   "id": "9eda5380",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:20.782101Z",
-     "iopub.status.busy": "2026-03-16T21:42:20.781914Z",
-     "iopub.status.idle": "2026-03-16T21:42:21.192973Z",
-     "shell.execute_reply": "2026-03-16T21:42:21.191755Z"
+     "iopub.execute_input": "2026-03-17T22:54:53.616433Z",
+     "iopub.status.busy": "2026-03-17T22:54:53.616207Z",
+     "iopub.status.idle": "2026-03-17T22:54:54.032239Z",
+     "shell.execute_reply": "2026-03-17T22:54:54.031296Z"
     }
    },
    "outputs": [
@@ -81,7 +81,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "804188db",
+   "id": "250a9952",
    "metadata": {},
    "source": [
     "## 2. Full-Volume Reference\n",
@@ -94,13 +94,13 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "e97cc879",
+   "id": "238329c0",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:21.195117Z",
-     "iopub.status.busy": "2026-03-16T21:42:21.194850Z",
-     "iopub.status.idle": "2026-03-16T21:42:21.851002Z",
-     "shell.execute_reply": "2026-03-16T21:42:21.849954Z"
+     "iopub.execute_input": "2026-03-17T22:54:54.034781Z",
+     "iopub.status.busy": "2026-03-17T22:54:54.034472Z",
+     "iopub.status.idle": "2026-03-17T22:54:55.997258Z",
+     "shell.execute_reply": "2026-03-17T22:54:55.996293Z"
     }
    },
    "outputs": [
@@ -125,7 +125,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "9815b7e0",
+   "id": "31907338",
    "metadata": {},
    "source": [
     "## 3. Split into Overlapping Sub-Crops\n",
@@ -137,13 +137,13 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "3e4df31e",
+   "id": "4115b5b0",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:21.853358Z",
-     "iopub.status.busy": "2026-03-16T21:42:21.852916Z",
-     "iopub.status.idle": "2026-03-16T21:42:21.858367Z",
-     "shell.execute_reply": "2026-03-16T21:42:21.857346Z"
+     "iopub.execute_input": "2026-03-17T22:54:55.999523Z",
+     "iopub.status.busy": "2026-03-17T22:54:55.999220Z",
+     "iopub.status.idle": "2026-03-17T22:54:56.004378Z",
+     "shell.execute_reply": "2026-03-17T22:54:56.003399Z"
     }
    },
    "outputs": [
@@ -173,13 +173,13 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "077c7563",
+   "id": "d82cb07f",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:21.860227Z",
-     "iopub.status.busy": "2026-03-16T21:42:21.860019Z",
-     "iopub.status.idle": "2026-03-16T21:42:21.980014Z",
-     "shell.execute_reply": "2026-03-16T21:42:21.978900Z"
+     "iopub.execute_input": "2026-03-17T22:54:56.006297Z",
+     "iopub.status.busy": "2026-03-17T22:54:56.006085Z",
+     "iopub.status.idle": "2026-03-17T22:54:56.126493Z",
+     "shell.execute_reply": "2026-03-17T22:54:56.125383Z"
     }
    },
    "outputs": [
@@ -214,7 +214,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "fe6b6e92",
+   "id": "ed2680c7",
    "metadata": {},
    "source": [
     "## 4. Generate Flows Per Sub-Crop\n",
@@ -228,13 +228,13 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "7cc855f1",
+   "id": "f7467827",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:21.982129Z",
-     "iopub.status.busy": "2026-03-16T21:42:21.981919Z",
-     "iopub.status.idle": "2026-03-16T21:42:25.103954Z",
-     "shell.execute_reply": "2026-03-16T21:42:25.102863Z"
+     "iopub.execute_input": "2026-03-17T22:54:56.128627Z",
+     "iopub.status.busy": "2026-03-17T22:54:56.128407Z",
+     "iopub.status.idle": "2026-03-17T22:54:59.229809Z",
+     "shell.execute_reply": "2026-03-17T22:54:59.228561Z"
     }
    },
    "outputs": [
@@ -368,7 +368,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "983f98ff",
+   "id": "6ad3ec3b",
    "metadata": {},
    "source": [
     "## 5. Stitch Flows with Boundary-Aware Cosine Blending\n",
@@ -387,13 +387,13 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "12000899",
+   "id": "e0e7d7fa",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:25.106105Z",
-     "iopub.status.busy": "2026-03-16T21:42:25.105908Z",
-     "iopub.status.idle": "2026-03-16T21:42:25.134781Z",
-     "shell.execute_reply": "2026-03-16T21:42:25.133743Z"
+     "iopub.execute_input": "2026-03-17T22:54:59.231947Z",
+     "iopub.status.busy": "2026-03-17T22:54:59.231730Z",
+     "iopub.status.idle": "2026-03-17T22:54:59.262783Z",
+     "shell.execute_reply": "2026-03-17T22:54:59.261602Z"
     }
    },
    "outputs": [
@@ -427,13 +427,13 @@
   {
    "cell_type": "code",
    "execution_count": 7,
-   "id": "2f664cc4",
+   "id": "26bc8e7c",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:25.136830Z",
-     "iopub.status.busy": "2026-03-16T21:42:25.136597Z",
-     "iopub.status.idle": "2026-03-16T21:42:25.457937Z",
-     "shell.execute_reply": "2026-03-16T21:42:25.456972Z"
+     "iopub.execute_input": "2026-03-17T22:54:59.264854Z",
+     "iopub.status.busy": "2026-03-17T22:54:59.264606Z",
+     "iopub.status.idle": "2026-03-17T22:54:59.592340Z",
+     "shell.execute_reply": "2026-03-17T22:54:59.591160Z"
     }
    },
    "outputs": [
@@ -492,7 +492,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "ea22c100",
+   "id": "97a2e3d6",
    "metadata": {},
    "source": [
     "## 6. Postprocess the Stitched Flow\n",
@@ -504,13 +504,13 @@
   {
    "cell_type": "code",
    "execution_count": 8,
-   "id": "cf473949",
+   "id": "44817b1c",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:25.460388Z",
-     "iopub.status.busy": "2026-03-16T21:42:25.460188Z",
-     "iopub.status.idle": "2026-03-16T21:42:25.525628Z",
-     "shell.execute_reply": "2026-03-16T21:42:25.524754Z"
+     "iopub.execute_input": "2026-03-17T22:54:59.594775Z",
+     "iopub.status.busy": "2026-03-17T22:54:59.594566Z",
+     "iopub.status.idle": "2026-03-17T22:54:59.660998Z",
+     "shell.execute_reply": "2026-03-17T22:54:59.660130Z"
     }
    },
    "outputs": [
@@ -532,7 +532,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "46ad2110",
+   "id": "078e1f41",
    "metadata": {},
    "source": [
     "## 7. Compare Results\n",
@@ -543,13 +543,13 @@
   {
    "cell_type": "code",
    "execution_count": 9,
-   "id": "7ed0a153",
+   "id": "47da904c",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:25.527924Z",
-     "iopub.status.busy": "2026-03-16T21:42:25.527699Z",
-     "iopub.status.idle": "2026-03-16T21:42:25.817955Z",
-     "shell.execute_reply": "2026-03-16T21:42:25.816815Z"
+     "iopub.execute_input": "2026-03-17T22:54:59.663348Z",
+     "iopub.status.busy": "2026-03-17T22:54:59.663151Z",
+     "iopub.status.idle": "2026-03-17T22:54:59.959049Z",
+     "shell.execute_reply": "2026-03-17T22:54:59.957858Z"
     }
    },
    "outputs": [
@@ -596,13 +596,13 @@
   {
    "cell_type": "code",
    "execution_count": 10,
-   "id": "c5cb48ce",
+   "id": "79d92ef0",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:25.820138Z",
-     "iopub.status.busy": "2026-03-16T21:42:25.819931Z",
-     "iopub.status.idle": "2026-03-16T21:42:26.020417Z",
-     "shell.execute_reply": "2026-03-16T21:42:26.019229Z"
+     "iopub.execute_input": "2026-03-17T22:54:59.960956Z",
+     "iopub.status.busy": "2026-03-17T22:54:59.960758Z",
+     "iopub.status.idle": "2026-03-17T22:55:00.165985Z",
+     "shell.execute_reply": "2026-03-17T22:55:00.164746Z"
     }
    },
    "outputs": [
@@ -644,7 +644,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "148e2812",
+   "id": "40cd3c26",
    "metadata": {},
    "source": [
     "## Summary\n",

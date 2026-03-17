@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "markdown",
-   "id": "c3c18e91",
+   "id": "014a72d4",
    "metadata": {},
    "source": [
     "# Full-Volume Instance Segmentation\n",
@@ -18,7 +18,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "027d8088",
+   "id": "00604f41",
    "metadata": {},
    "source": [
     "## 1. Create Synthetic Data\n",
@@ -31,13 +31,13 @@
   {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "4eaeac10",
+   "id": "065b53fa",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:14.703954Z",
-     "iopub.status.busy": "2026-03-16T21:42:14.703770Z",
-     "iopub.status.idle": "2026-03-16T21:42:17.709107Z",
-     "shell.execute_reply": "2026-03-16T21:42:17.708135Z"
+     "iopub.execute_input": "2026-03-17T22:54:46.745085Z",
+     "iopub.status.busy": "2026-03-17T22:54:46.744801Z",
+     "iopub.status.idle": "2026-03-17T22:54:48.616682Z",
+     "shell.execute_reply": "2026-03-17T22:54:48.615557Z"
     }
    },
    "outputs": [
@@ -89,13 +89,13 @@
   {
    "cell_type": "code",
    "execution_count": 2,
-   "id": "21e2fc37",
+   "id": "a7427935",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:17.711298Z",
-     "iopub.status.busy": "2026-03-16T21:42:17.711031Z",
-     "iopub.status.idle": "2026-03-16T21:42:17.878150Z",
-     "shell.execute_reply": "2026-03-16T21:42:17.876957Z"
+     "iopub.execute_input": "2026-03-17T22:54:48.618778Z",
+     "iopub.status.busy": "2026-03-17T22:54:48.618470Z",
+     "iopub.status.idle": "2026-03-17T22:54:48.792353Z",
+     "shell.execute_reply": "2026-03-17T22:54:48.791252Z"
     }
    },
    "outputs": [
@@ -128,7 +128,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "04b13e14",
+   "id": "eb56f1ad",
    "metadata": {},
    "source": [
     "## 2. Generate Diffusion Flows\n",
@@ -145,13 +145,13 @@
   {
    "cell_type": "code",
    "execution_count": 3,
-   "id": "b4b08f70",
+   "id": "3debf544",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:17.880152Z",
-     "iopub.status.busy": "2026-03-16T21:42:17.879930Z",
-     "iopub.status.idle": "2026-03-16T21:42:18.503744Z",
-     "shell.execute_reply": "2026-03-16T21:42:18.502751Z"
+     "iopub.execute_input": "2026-03-17T22:54:48.794414Z",
+     "iopub.status.busy": "2026-03-17T22:54:48.794194Z",
+     "iopub.status.idle": "2026-03-17T22:54:50.932829Z",
+     "shell.execute_reply": "2026-03-17T22:54:50.931651Z"
     }
    },
    "outputs": [
@@ -179,13 +179,13 @@
   {
    "cell_type": "code",
    "execution_count": 4,
-   "id": "71035106",
+   "id": "053740f0",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:18.506087Z",
-     "iopub.status.busy": "2026-03-16T21:42:18.505487Z",
-     "iopub.status.idle": "2026-03-16T21:42:18.810153Z",
-     "shell.execute_reply": "2026-03-16T21:42:18.808910Z"
+     "iopub.execute_input": "2026-03-17T22:54:50.935109Z",
+     "iopub.status.busy": "2026-03-17T22:54:50.934788Z",
+     "iopub.status.idle": "2026-03-17T22:54:51.251574Z",
+     "shell.execute_reply": "2026-03-17T22:54:51.250515Z"
     }
    },
    "outputs": [
@@ -237,7 +237,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "3cc7848f",
+   "id": "90212935",
    "metadata": {},
    "source": [
     "## 3. Postprocess: Flow Tracking + Clustering\n",
@@ -251,13 +251,13 @@
   {
    "cell_type": "code",
    "execution_count": 5,
-   "id": "0111f9e5",
+   "id": "00e39e7b",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:18.812234Z",
-     "iopub.status.busy": "2026-03-16T21:42:18.812015Z",
-     "iopub.status.idle": "2026-03-16T21:42:18.878333Z",
-     "shell.execute_reply": "2026-03-16T21:42:18.877454Z"
+     "iopub.execute_input": "2026-03-17T22:54:51.254049Z",
+     "iopub.status.busy": "2026-03-17T22:54:51.253811Z",
+     "iopub.status.idle": "2026-03-17T22:54:51.320936Z",
+     "shell.execute_reply": "2026-03-17T22:54:51.319967Z"
     }
    },
    "outputs": [
@@ -289,13 +289,13 @@
   {
    "cell_type": "code",
    "execution_count": 6,
-   "id": "2c242c95",
+   "id": "9bc25580",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2026-03-16T21:42:18.880389Z",
-     "iopub.status.busy": "2026-03-16T21:42:18.880186Z",
-     "iopub.status.idle": "2026-03-16T21:42:18.985507Z",
-     "shell.execute_reply": "2026-03-16T21:42:18.984506Z"
+     "iopub.execute_input": "2026-03-17T22:54:51.323069Z",
+     "iopub.status.busy": "2026-03-17T22:54:51.322854Z",
+     "iopub.status.idle": "2026-03-17T22:54:51.431111Z",
+     "shell.execute_reply": "2026-03-17T22:54:51.430024Z"
     }
    },
    "outputs": [
@@ -331,7 +331,7 @@
   },
   {
    "cell_type": "markdown",
-   "id": "e92735de",
+   "id": "c0455842",
    "metadata": {},
    "source": [
     "## Summary\n",
