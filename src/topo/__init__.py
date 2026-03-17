@@ -13,11 +13,6 @@ from .flow import (
     generate_direct_flows,
     generate_diffusion_flows,
 )
-from .flow_gpu import (
-    compute_flow_targets_gpu,
-    generate_direct_flows_gpu,
-    generate_diffusion_flows_gpu,
-)
 from .postprocess import (
     run_instance_segmentation,
     postprocess_single,
@@ -25,11 +20,21 @@ from .postprocess import (
     cluster_convergence,
     split_disconnected,
 )
-from .postprocess_gpu import (
-    run_instance_segmentation_gpu,
-    postprocess_single_gpu,
-    track_flows_gpu,
-)
+
+# GPU modules require torch — import lazily so topo works without it
+try:
+    from .flow_gpu import (
+        compute_flow_targets_gpu,
+        generate_direct_flows_gpu,
+        generate_diffusion_flows_gpu,
+    )
+    from .postprocess_gpu import (
+        run_instance_segmentation_gpu,
+        postprocess_single_gpu,
+        track_flows_gpu,
+    )
+except ImportError:
+    pass
 from .config import (
     EVALUATED_INSTANCE_CLASSES,
     get_instance_class_config,
